@@ -1,5 +1,6 @@
-import { client } from '../config/database.js'
 import bcrypt from 'bcrypt'
+import { client } from '../config/database.js'
+import { collegeByEmail } from '../consts/collegeByEmail.js'
 
 export const signupUser = async (req, res) => {
     const { username, email, password } = req.body
@@ -7,6 +8,12 @@ export const signupUser = async (req, res) => {
     if (!username || !email || !password) {
         return res.status(400).json({ message: 'All fields are required' })
     }
+
+    const domain = email.split('@')[1]
+
+        if (!Object.keys(collegeByEmail).includes(domain)) {
+            return res.status(400).json({ message: 'Sign up with a valid academic email' })
+        }
 
     try {
         const existingUser = await client.execute({
