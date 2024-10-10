@@ -4,21 +4,32 @@ export const createComment = async (req, res) => {
     const { postId } = req.params
     const { username, comment, commentId } = req.body
 
-    const sql = `
+    const insertCommentSql = `
       INSERT INTO Comment (username, postId, comment, commentId)
       VALUES (?, ?, ?, ?)
     `
-    const selectSql = `
+
+    const selectCommentSql = `
       SELECT * FROM Comment WHERE commentId = ?
+    `
+
+    const updateCommentCountSql = `
+      UPDATE Post
+      SET commentCount = commentCount + 1
+      WHERE postId = ?
     `
 
     try {
         await client.execute({
-            sql,
+            insertCommentSql,
             args: [username, postId, comment, commentId],
         })
+        await client.execute({
+            sql: updateCommentCountSql,
+            args: [postId],
+        })
         const result = await client.execute({
-            sql: selectSql,
+            sql: selectCommentSql,
             args: [commentId],
         })
         const insertedComment = result.rows[0] 
@@ -50,10 +61,38 @@ export const getComments = async (req, res) => {
 export const deleteComment = async (req, res) => {
     const { commentId } = req.params
 
+    const selectPostIdSql = `
+        SELECT postId FROM Comment WHERE commentId = ?
+    `
+
+    const deleteCommentSql = `
+        DELETE FROM Comment WHERE commentId = ?
+    `
+    const updateCommentCountSql = `
+        UPDATE Post
+        SET commentCount = commentCount - 1
+        WHERE postId = ?
+    `
+
     try {
-        await client.execute({
-            sql: 'DELETE FROM Comment WHERE commentId = ?',
+        const result = await client.execute({
+            sql: selectPostIdSql,
             args: [commentId],
+        })
+        const postId = result.rows[0]?.postId
+
+        if (!postId) {
+            return res.status(404).json({ message: 'Comment not found' })
+        }
+
+        await client.execute({
+            sql: deleteCommentSql,
+            args: [commentId],
+        })
+
+        await client.execute({
+            sql: updateCommentCountSql,
+            args: [postId],
         })
         res.status(200).json({ message: 'Comment deleted successfully' })
     } catch (error) {
