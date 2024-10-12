@@ -15,7 +15,7 @@ const corsOptions = {
 }
 
 console.log({originUrl})
-app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
 app.use(express.json())
 
 app.use('/post', postRoutes)
