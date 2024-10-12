@@ -65,6 +65,6 @@ export const loginUser = async (req, res) => {
             res.status(401).json({ message: 'Invalid credentials' })
         }
     } catch (error) {
-        res.status(500).json({ message: 'Error querying database', error })
+        res.status(500).json({ message: 'Error querying database, try again later.', error })
     }
 }
