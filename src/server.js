@@ -6,14 +6,15 @@ import { commentRoutes } from './routes/commentRoutes.js'
 import { userRoutes } from './routes/userRoutes.js'
 import { sendRecommendation } from './controllers/recommendationController.js'
 
+const originUrl = process.env.FRONTEND_URL
 const app = express()
 
 const corsOptions = {
-    origin: process.env.FRONTEND_URL,
+    origin: originUrl,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
 }
 
+console.log({originUrl})
 app.use(cors(corsOptions))
 app.use(express.json())
 
