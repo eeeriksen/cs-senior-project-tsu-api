@@ -8,7 +8,13 @@ import { sendRecommendation } from './controllers/recommendationController.js'
 
 const app = express()
 
-app.use(cors())
+const corsOptions = {
+    origin: process.env.FRONTEND_URL,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+}
+
+app.use(cors(corsOptions))
 app.use(express.json())
 
 app.use('/post', postRoutes)
