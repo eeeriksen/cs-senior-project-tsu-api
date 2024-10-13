@@ -1,33 +1,28 @@
 /* eslint-disable no-undef */
 import express from 'express'
+import cors from 'cors'
 import { postRoutes } from './routes/postRoutes.js'
 import { commentRoutes } from './routes/commentRoutes.js'
 import { userRoutes } from './routes/userRoutes.js'
 import { sendRecommendation } from './controllers/recommendationController.js'
 
+const originUrl = process.env.FRONTEND_URL
 const app = express()
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173')
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+const corsOptions = {
+    origin: originUrl,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}
 
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200)
-    }
-    next()
-})
-
+console.log({originUrl})
+app.use(cors(corsOptions))
 app.use(express.json())
 
 app.use('/post', postRoutes)
 app.use('/user', userRoutes)
 app.use('/comment', commentRoutes)
-app.post('/send-recommendation', sendRecommendation)
 
-app.use((req, res) => {
-    res.status(404).json({ message: 'Route not found' })
-})
+app.post('/send-recommendation', sendRecommendation)
 
 const PORT = process.env.PORT || 5001
 app.listen(PORT, () => {
