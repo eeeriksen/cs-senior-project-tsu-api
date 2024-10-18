@@ -4,9 +4,9 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export const sendRecommendation = async (req, res) => {
-    const { username, email, message } = req.body
+    const { username, message } = req.body
 
-    if (!username || !email || !message) {
+    if (!username || !message) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
@@ -16,7 +16,6 @@ export const sendRecommendation = async (req, res) => {
             to: 'eriksen.lezama@gmail.com', // the email where the form data should be sent
             subject: `Campus Voices - New Recommendation from ${username}`,
             html: `<p><strong>username:</strong> ${username}</p>
-                   <p><strong>Email:</strong> ${email}</p>
                    <p><strong>Message:</strong> ${message}</p>`,
         })
 

@@ -1,10 +1,10 @@
 import { client } from '../config/database.js'
 
 export const createPost = async (req, res) => {
-    const { postId, username, title, body, college } = req.body
+    const { postId, username, title, body, domain } = req.body
 
     const sql = `
-        INSERT INTO Post (postId, username, title, body, college)
+        INSERT INTO Post (postId, username, title, body, domain)
         VALUES (?, ?, ?, ?, ?)
     `
     const selectSql = `
@@ -14,7 +14,7 @@ export const createPost = async (req, res) => {
     try {
         await client.execute({
             sql,
-            args: [postId, username, title, body, college]
+            args: [postId, username, title, body, domain]
         })
         const result = await client.execute({
             sql: selectSql,
@@ -49,17 +49,17 @@ export const getPost = async (req, res) => {
     }
 }
 
-export const getCollegePosts =  async (req, res) => {
-    const { college } = req.params
+export const getDomainPosts =  async (req, res) => {
+    const { domain } = req.params
 
     const sql = `
-        SELECT * FROM Post WHERE college = ? ORDER BY createdAt DESC
+        SELECT * FROM Post WHERE domain = ? ORDER BY createdAt DESC
     `
 
     try {
         const result = await client.execute({
             sql,
-            args: [college]
+            args: [domain]
         })
         const posts = result.rows
 

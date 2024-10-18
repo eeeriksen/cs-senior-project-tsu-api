@@ -21,7 +21,7 @@ export const createComment = async (req, res) => {
 
     try {
         await client.execute({
-            insertCommentSql,
+            sql: insertCommentSql,
             args: [username, postId, comment, commentId],
         })
         await client.execute({

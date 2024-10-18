@@ -2,7 +2,7 @@ import express from 'express'
 import {
     createPost,
     deletePost,
-    getCollegePosts,
+    getDomainPosts,
     getPost,
     getUserPosts
 } from '../controllers/postController.js'
@@ -10,7 +10,7 @@ import {
 export const postRoutes = express.Router()
 
 postRoutes.get('/:postId', getPost)
-postRoutes.get('/college/:college', getCollegePosts)
+postRoutes.get('/domain/:domain', getDomainPosts)
 postRoutes.get('/user/:username', getUserPosts)
 postRoutes.post('/create-post', createPost)
 postRoutes.delete('/:postId', deletePost)
